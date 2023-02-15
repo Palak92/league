@@ -6,8 +6,8 @@ import (
 	"strconv"
 )
 
-// matrixToString returns a string in matrix format for a given 2D slice of strings
-func matrixToString(m [][]string) string {
+// MatrixToString returns a string in matrix format for a given 2D slice of strings
+func MatrixToString(m [][]string) string {
 	response := ""
 	for i := 0; i < len(m); i++ {
 		for j := 0; j < len(m[0]); j++ {
@@ -23,7 +23,7 @@ func matrixToString(m [][]string) string {
 	return response
 }
 
-// invertMatrix returns a 2D slice of strings with the columns and rows inverted
+// Invert returns a 2D slice of strings with the columns and rows inverted.
 func Invert(m [][]string) [][]string {
 	rows, cols := size(m)
 
@@ -38,8 +38,8 @@ func Invert(m [][]string) [][]string {
 	return inv
 }
 
-// flattenMatrix returns a string with the matrix flattened into 1 line
-func flattenMatrix(m [][]string) string {
+// FlattenMatrix returns a string with the matrix flattened into 1 line
+func FlattenMatrix(m [][]string) string {
 	flat := ""
 	for i := 0; i < len(m); i++ {
 		for j := 0; j < len(m[0]); j++ {
@@ -50,8 +50,8 @@ func flattenMatrix(m [][]string) string {
 	return flat
 }
 
-// sumMatrix returns the sum of all integers in the matrix
-func sumMatrix(m [][]string) int {
+// SumMatrix returns the sum of all integers in the matrix
+func SumMatrix(m [][]string) int {
 	sum := 0
 	for i := 0; i < len(m); i++ {
 		for j := 0; j < len(m[0]); j++ {
@@ -65,8 +65,8 @@ func sumMatrix(m [][]string) int {
 	return sum
 }
 
-// multiplyMatrix returns the product of all integers in the matrix
-func multiplyMatrix(m [][]string) int {
+// MultiplyMatrix returns the product of all integers in the matrix
+func MultiplyMatrix(m [][]string) int {
 	product := 1
 	for i := 0; i < len(m); i++ {
 		for j := 0; j < len(m[0]); j++ {

@@ -3,11 +3,11 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
-	"io"
 	"log"
-	"matrix"
 	"net/http"
 	"strings"
+
+	"github.com/palak92/league/pkg/matrix"
 )
 
 // Run with
@@ -16,7 +16,7 @@ import (
 //		curl -F 'file=@/path/matrix.csv' "localhost:8080/echo"
 
 func main() {
-	http.HandleFunc("/echo", EchoHandler)
+	http.HandleFunc("/echo", echo)
 	http.HandleFunc("/invert", InvertHandler)
 	http.HandleFunc("/flatten", FlattenHandler)
 	http.HandleFunc("/sum", SumHandler)
@@ -27,65 +27,76 @@ func main() {
 
 // Echo operation
 func EchoHandler(w http.ResponseWriter, r *http.Request) {
-	m := parseCSV(r.Body)
-	response := matrix.MatrixToString(m)
+	records, err := csvRecords(r)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
+		return
+	}
+	response := matrix.MatrixToString(records)
 	fmt.Fprint(w, response)
 }
 
 // Invert operation
 func InvertHandler(w http.ResponseWriter, r *http.Request) {
-	m := parseCSV(r.Body)
-	inv := matrix.InvertMatrix(m)
-	response := matrix.matrixToString(inv)
+	records, err := csvRecords(r)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
+		return
+	}
+	inv := matrix.Invert(records)
+	response := matrix.MatrixToString(inv)
 	fmt.Fprint(w, response)
 }
 
 // Flatten operation
 func FlattenHandler(w http.ResponseWriter, r *http.Request) {
-	m := parseCSV(r.Body)
-	flat := matrix.FlattenMatrix(m)
+	records, err := csvRecords(r)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
+		return
+	}
+	flat := matrix.FlattenMatrix(records)
 	fmt.Fprint(w, flat)
 }
 
 // Sum operation
 func SumHandler(w http.ResponseWriter, r *http.Request) {
-	m := parseCSV(r.Body)
-	sum := matrix.SumMatrix(m)
+	records, err := csvRecords(r)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
+		return
+	}
+	sum := matrix.SumMatrix(records)
 	fmt.Fprint(w, sum)
 }
 
 // Multiply operation
 func MultiplyHandler(w http.ResponseWriter, r *http.Request) {
-	m := parseCSV(r.Body)
-	product := matrix.MultiplyMatrix(m)
-	fmt.Fprint(w, product)
-}
-
-// parseCSV reads a CSV file from an io.Reader and returns a 2D slice of strings
-func parseCSV(reader io.Reader) [][]string {
-	r := csv.NewReader(reader)
-	var m [][]string
-	for {
-		record, err := r.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
-		m = append(m, record)
-	}
-	return m
-}
-
-func echo(w http.ResponseWriter, req *http.Request) {
-	file, _, err := req.FormFile("file")
+	records, err := csvRecords(r)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
 		return
 	}
+	product := matrix.MultiplyMatrix(records)
+	fmt.Fprint(w, product)
+}
+
+// csvRecords reads a CSV file from an io.Reader and returns a 2D slice of strings
+func csvRecords(req *http.Request) ([][]string, error) {
+	file, _, err := req.FormFile("file")
+	if err != nil {
+		return nil, fmt.Errorf("while getting file from req")
+	}
 	defer file.Close()
-	records, err := csv.NewReader(file).ReadAll()
+	return csv.NewReader(file).ReadAll()
+}
+
+func echo(w http.ResponseWriter, r *http.Request) {
+	records, err := csvRecords(r)
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
+		return
+	}
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
 		return
