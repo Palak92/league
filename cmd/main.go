@@ -55,7 +55,7 @@ func FlattenHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
 		return
 	}
-	flat := matrix.FlattenMatrix(records)
+	flat := matrix.Flatten(records)
 	fmt.Fprint(w, flat)
 }
 
@@ -66,7 +66,7 @@ func SumHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
 		return
 	}
-	sum := matrix.SumMatrix(records)
+	sum := matrix.Sum(records)
 	fmt.Fprint(w, sum)
 }
 
@@ -77,7 +77,7 @@ func MultiplyHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
 		return
 	}
-	product := matrix.MultiplyMatrix(records)
+	product := matrix.Multiply(records)
 	fmt.Fprint(w, product)
 }
 

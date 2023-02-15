@@ -38,23 +38,30 @@ func Invert(m [][]string) [][]string {
 	return inv
 }
 
-// FlattenMatrix returns a string with the matrix flattened into 1 line
-func FlattenMatrix(m [][]string) string {
+// Flatten returns a string with the matrix flattened into 1 line.
+func Flatten(m [][]string) string {
 	flat := ""
-	for i := 0; i < len(m); i++ {
-		for j := 0; j < len(m[0]); j++ {
+	rows, cols := size(m)
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
 			flat += m[i][j] + ","
 		}
 	}
-	flat = flat[:len(flat)-1] // remove last comma
+	if flat != "" {
+		flat = flat[:len(flat)-1] // remove last comma
+	}
 	return flat
 }
 
-// SumMatrix returns the sum of all integers in the matrix
-func SumMatrix(m [][]string) int {
+// Sum returns the sum of all integers in the matrix.
+func Sum(m [][]string) string {
 	sum := 0
-	for i := 0; i < len(m); i++ {
-		for j := 0; j < len(m[0]); j++ {
+	rows, cols := size(m)
+	if rows == 0 && cols == 0 {
+		return ""
+	}
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
 			val, err := strconv.Atoi(m[i][j])
 			if err != nil {
 				log.Fatal(err)
@@ -62,12 +69,16 @@ func SumMatrix(m [][]string) int {
 			sum += val
 		}
 	}
-	return sum
+	return strconv.Itoa(sum)
 }
 
-// MultiplyMatrix returns the product of all integers in the matrix
-func MultiplyMatrix(m [][]string) int {
+// Multiply returns the product of all integers in the matrix.
+func Multiply(m [][]string) string {
 	product := 1
+	rows, cols := size(m)
+	if rows == 0 && cols == 0 {
+		return ""
+	}
 	for i := 0; i < len(m); i++ {
 		for j := 0; j < len(m[0]); j++ {
 			val, err := strconv.Atoi(m[i][j])
@@ -77,7 +88,7 @@ func MultiplyMatrix(m [][]string) int {
 			product *= val
 		}
 	}
-	return product
+	return strconv.Itoa(product)
 }
 
 func size(m [][]string) (rows, cols int) {

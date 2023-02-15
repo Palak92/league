@@ -13,18 +13,18 @@ func TestInvert(t *testing.T) {
 	}{
 		{
 			desc:   "Normal array",
-			matrix: [][]string{[]string{"1", "2", "3"}, []string{"4", "5", "6"}, []string{"7", "8", "9"}},
-			want:   [][]string{[]string{"1", "4", "7"}, []string{"2", "5", "8"}, []string{"3", "6", "9"}},
+			matrix: [][]string{{"1", "2", "3"}, {"4", "5", "6"}, {"7", "8", "9"}},
+			want:   [][]string{{"1", "4", "7"}, {"2", "5", "8"}, {"3", "6", "9"}},
 		},
 		{
 			desc:   "Row to column",
-			matrix: [][]string{[]string{"1", "2", "3"}},
-			want:   [][]string{[]string{"1"}, []string{"2"}, []string{"3"}},
+			matrix: [][]string{{"1", "2", "3"}},
+			want:   [][]string{{"1"}, {"2"}, {"3"}},
 		},
 		{
 			desc:   "Column to row",
-			matrix: [][]string{[]string{"1"}, []string{"2"}, []string{"3"}},
-			want:   [][]string{[]string{"1", "2", "3"}},
+			matrix: [][]string{{"1"}, {"2"}, {"3"}},
+			want:   [][]string{{"1", "2", "3"}},
 		},
 		{
 			desc:   "Empty",
@@ -37,7 +37,117 @@ func TestInvert(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			got := Invert(tc.matrix)
 			if !reflect.DeepEqual(tc.want, got) {
-				// t.Fatalf("Invert(%v): %v, got: %v", tc.matrix tc.want, got)
+				t.Errorf("Invert(%v): %v, got: %v", tc.matrix, tc.want, got)
+			}
+		})
+	}
+}
+
+func TestFlatten(t *testing.T) {
+
+	var tcs = []struct {
+		desc   string
+		matrix [][]string
+		want   string
+	}{
+		{
+			desc:   "Normal array",
+			matrix: [][]string{{"1", "2", "3"}, {"4", "5", "6"}, {"7", "8", "9"}},
+			want:   "1,2,3,4,5,6,7,8,9",
+		},
+		{
+			desc:   "Row matrix",
+			matrix: [][]string{{"1", "-2", "3"}},
+			want:   "1,-2,3",
+		},
+		{
+			desc:   "Column matrix",
+			matrix: [][]string{{"1"}, {"2"}, {"3"}},
+			want:   "1,2,3",
+		},
+		{
+			desc:   "Empty",
+			matrix: [][]string{},
+			want:   "",
+		},
+	}
+
+	for _, tc := range tcs {
+		t.Run(tc.desc, func(t *testing.T) {
+			got := Flatten(tc.matrix)
+			if tc.want != got {
+				t.Errorf("Flatten(%s): got %v, want %v", tc.matrix, got, tc.want)
+			}
+		})
+	}
+}
+
+func TestMultiply(t *testing.T) {
+	var tcs = []struct {
+		desc   string
+		matrix [][]string
+		want   string
+	}{
+		{
+			desc:   "Normal array",
+			matrix: [][]string{{"1", "2", "3"}, {"4", "5", "6"}, {"7", "8", "9"}},
+			want:   "362880",
+		},
+		{
+			desc:   "Negative",
+			matrix: [][]string{{"1", "-2", "3"}},
+			want:   "-6",
+		},
+		{
+			desc:   "Zero",
+			matrix: [][]string{{"1", "0", "3"}},
+			want:   "0",
+		},
+		{
+			desc:   "Empty",
+			matrix: [][]string{},
+			want:   "",
+		},
+	}
+
+	for _, tc := range tcs {
+		t.Run(tc.desc, func(t *testing.T) {
+			got := Multiply(tc.matrix)
+			if tc.want != got {
+				t.Errorf("Multiply(%s): got %v, want %v", tc.matrix, got, tc.want)
+			}
+		})
+	}
+}
+
+func TestSum(t *testing.T) {
+	var tcs = []struct {
+		desc   string
+		matrix [][]string
+		want   string
+	}{
+		{
+			desc:   "Normal array",
+			matrix: [][]string{{"1", "2", "3"}, {"4", "5", "6"}, {"7", "8", "9"}},
+			want:   "45",
+		},
+		{
+			desc:   "Row with sum zero",
+			matrix: [][]string{{"1", "-1"}},
+			want:   "0",
+		},
+		{
+			desc:   "Empty",
+			matrix: [][]string{},
+			want:   "",
+		},
+	}
+
+	for _, tc := range tcs {
+		t.Run(tc.desc, func(t *testing.T) {
+			got := Sum(tc.matrix)
+			if tc.want != got {
+				t.Errorf("Sum(%v): %v, got: %v", tc.matrix, tc.want, got)
 			}
 		})
 	}
@@ -170,38 +280,6 @@ func TestInvert(t *testing.T) {
 // 	}
 // }
 
-// func TestInvertMatrix(t *testing.T) {
-// 	m := [][]string{{"1", "2", "3"}, {"4", "5", "6"}, {"7", "8", "9"}}
-// 	inv := invertMatrix(m)
-
-// 	if len(inv) != 3 {
-// 		t.Errorf("invertMatrix() returned %v rows, expected %v", len(inv), 3)
-// 	}
-
-// 	if len(inv[0]) != 3 {
-// 		t.Errorf("invertMatrix() returned %v columns, expected %v", len(inv[0]), 3)
-// 	}
-
-// 	expected := [][]string{{"1", "4", "7"}, {"2", "5", "8"}, {"3", "6", "9"}}
-// 	for i := range inv {
-// 		for j := range inv[i] {
-// 			if inv[i][j] != expected[i][j] {
-// 				t.Errorf("invertMatrix() returned unexpected value at (%v, %v): got %v, want %v", i, j, inv[i][j], expected[i][j])
-// 			}
-// 		}
-// 	}
-// }
-
-// func TestFlattenMatrix(t *testing.T) {
-// 	m := [][]string{{"1", "2", "3"}, {"4", "5", "6"}, {"7", "8", "9"}}
-// 	flat := FlattenMatrix(m)
-
-// 	expected := "1,2,3,4,5,6,7,8,9"
-// 	if flat != expected {
-// 		t.Errorf("flattenMatrix() returned unexpected value: got %v, want %v", flat, expected)
-// 	}
-// }
-
 // func TestSumMatrix(t *testing.T) {
 // 	m := [][]string{{"1", "2", "3"}, {"4", "5", "6"}, {"7", "8", "9"}}
 // 	sum := SumMatrix(m)
@@ -323,43 +401,5 @@ func TestInvert(t *testing.T) {
 
 // 	if rr.Code != http.StatusBadRequest {
 // 		t.Errorf("handler returned wrong status code: got %v, want %v", rr.Code, http.StatusBadRequest)
-// 	}
-// }
-
-// func TestMatrixToStringEmptyMatrix(t *testing.T) {
-// 	m := [][]string{}
-// 	str := MatrixToString(m)
-
-// 	expected := ""
-// 	if str != expected {
-// 		t.Errorf("matrixToString() returned unexpected value: got %v, want %v", str, expected)
-// 	}
-// }
-
-// func TestFlattenMatrixEmptyMatrix(t *testing.T) {
-// 	m := [][]string{}
-// 	flat := FlattenMatrix(m)
-
-// 	expected := ""
-// 	if flat != expected {
-// 		t.Errorf("flattenMatrix() returned unexpected value: got %v, want %v", flat, expected)
-// 	}
-// }
-
-// func TestSumMatrixEmptyMatrix(t *testing.T) {
-// 	m := [][]string{}
-// 	sum := SumMatrix(m)
-
-// 	if sum != 0 {
-// 		t.Errorf("sumMatrix() returned unexpected value: got %v, want %v", sum, 0)
-// 	}
-// }
-
-// func TestMultiplyMatrixEmptyMatrix(t *testing.T) {
-// 	m := [][]string{}
-// 	product := MultiplyMatrix(m)
-
-// 	if product != 0 {
-// 		t.Errorf("multiplyMatrix() returned unexpected value: got %v, want %v", product, 0)
 // 	}
 // }
