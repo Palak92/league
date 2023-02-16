@@ -174,27 +174,6 @@ func TestSum(t *testing.T) {
 // 	}
 // }
 
-// func TestEchoHandler(t *testing.T) {
-// 	m := "1,2,3\n4,5,6\n7,8,9"
-// 	req, err := http.NewRequest("POST", "/echo", strings.NewReader(m))
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	rr := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(EchoHandler)
-// 	handler.ServeHTTP(rr, req)
-
-// 	if rr.Code != http.StatusOK {
-// 		t.Errorf("handler returned wrong status code: got %v, want %v", rr.Code, http.StatusOK)
-// 	}
-
-// 	expected := "1,2,3\n4,5,6\n7,8,9"
-// 	if rr.Body.String() != expected {
-// 		t.Errorf("handler returned unexpected body: got %v want %v", rr.Body.String(), expected)
-// 	}
-// }
-
 // func TestFlattenHandler(t *testing.T) {
 // 	m := "1,2,3\n4,5,6\n7,8,9"
 // 	req, err := http.NewRequest("POST", "/flatten", strings.NewReader(m))
