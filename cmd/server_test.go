@@ -114,15 +114,9 @@ func TestInvertHandler(t *testing.T) {
 		t.Errorf("invertHandler returned wrong status code: got %v, want %v", rr.Code, http.StatusOK)
 	}
 
-	expected := "45"
+	expected := "1,4,7\n2,5,8\n3,6,9"
 	if rr.Body.String() != expected {
 		t.Errorf("invertHandler returned unexpected body: got %v want %v", rr.Body.String(), expected)
-	}
-
-	m := "1,4,7\n2,5,8\n3,6,9"
-	req, err := http.NewRequest("POST", "/invert", strings.NewReader(m))
-	if err != nil {
-		t.Fatal(err)
 	}
 }
 
