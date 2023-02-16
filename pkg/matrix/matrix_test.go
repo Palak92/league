@@ -191,3 +191,41 @@ func TestString(t *testing.T) {
 		})
 	}
 }
+
+func TestIsSquare(t *testing.T) {
+	var tcs = []struct {
+		desc   string
+		matrix [][]string
+		want   bool
+	}{
+		{
+			desc:   "Normal array",
+			matrix: [][]string{{"1", "2", "3"}, {"4", "5", "6"}, {"7", "8", "9"}},
+			want:   true,
+		},
+		{
+			desc:   "Negative",
+			matrix: [][]string{{"1", "-2", "3"}},
+			want:   false,
+		},
+		{
+			desc:   "One element",
+			matrix: [][]string{{"1"}},
+			want:   true,
+		},
+		{
+			desc:   "Empty",
+			matrix: [][]string{},
+			want:   true,
+		},
+	}
+
+	for _, tc := range tcs {
+		t.Run(tc.desc, func(t *testing.T) {
+			got := IsSquare(tc.matrix)
+			if tc.want != got {
+				t.Errorf("IsSquare(%v)= got %v, want %v", tc.matrix, got, tc.want)
+			}
+		})
+	}
+}

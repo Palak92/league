@@ -14,8 +14,10 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
+const validFilePath = "../test/test_data/matrix.csv"
+
 func TestEchoHandler(t *testing.T) {
-	body, ct := multipartBody(t)
+	body, ct := multipartBody(t, validFilePath)
 	req := httptest.NewRequest(http.MethodPost, "/echo", body)
 	req.Header.Add("Content-Type", ct)
 
@@ -38,7 +40,7 @@ func TestEchoHandler(t *testing.T) {
 }
 
 func TestMultiplyHandler(t *testing.T) {
-	body, ct := multipartBody(t)
+	body, ct := multipartBody(t, validFilePath)
 	req := httptest.NewRequest(http.MethodPost, "/echo", body)
 	req.Header.Add("Content-Type", ct)
 
@@ -61,7 +63,7 @@ func TestMultiplyHandler(t *testing.T) {
 }
 
 func TestFlattenHandler(t *testing.T) {
-	body, ct := multipartBody(t)
+	body, ct := multipartBody(t, validFilePath)
 	req := httptest.NewRequest(http.MethodPost, "/flatten", body)
 	req.Header.Add("Content-Type", ct)
 
@@ -80,7 +82,7 @@ func TestFlattenHandler(t *testing.T) {
 }
 
 func TestSumHandler(t *testing.T) {
-	body, ct := multipartBody(t)
+	body, ct := multipartBody(t, validFilePath)
 	req := httptest.NewRequest(http.MethodPost, "/sum", body)
 	req.Header.Add("Content-Type", ct)
 
@@ -100,7 +102,7 @@ func TestSumHandler(t *testing.T) {
 
 func TestInvertHandler(t *testing.T) {
 
-	body, ct := multipartBody(t)
+	body, ct := multipartBody(t, validFilePath)
 	req := httptest.NewRequest(http.MethodPost, "/invert", body)
 	req.Header.Add("Content-Type", ct)
 
@@ -124,27 +126,59 @@ func TestInvertHandler(t *testing.T) {
 	}
 }
 
-// func TestMatrixToString(t *testing.T) {
-// 	m := [][]string{{"1", "2", "3"}, {"4", "5", "6"}, {"7", "8", "9"}}
-// 	str := MatrixToString(m)
+func TestMatrixValidation(t *testing.T) {
 
-// 	expected := "1,2,3\n4,5,6\n7,8,9"
-// 	if str != expected {
-// 		t.Errorf("matrixToString() returned unexpected value: got %v, want %v", str, expected)
-// 	}
-// }
+	var tcs = []struct {
+		desc     string
+		filePath string
+		wantErr  bool
+	}{
+		{
+			desc:     "valid matrix",
+			filePath: validFilePath,
+			wantErr:  false,
+		},
+		{
+			desc:     "non-square matrix",
+			filePath: "../test/test_data/non_square.csv",
+			wantErr:  true,
+		},
+		{
+			desc:     "non-integer matrix elements",
+			filePath: "../test/test_data/non_integer.csv",
+			wantErr:  true,
+		},
+		{
+			desc:     "Empty",
+			filePath: "../test/test_data/empty.csv",
+			wantErr:  false,
+		},
+	}
 
-// func TestParseCSVEmptyInput(t *testing.T) {
-// 	r := bytes.NewReader([]byte{})
-// 	m := parseCSV(r)
+	for _, tc := range tcs {
+		t.Run(tc.desc, func(t *testing.T) {
+			body, ct := multipartBody(t, tc.filePath)
+			req := httptest.NewRequest(http.MethodPost, "/sum", body)
+			req.Header.Add("Content-Type", ct)
 
-// 	if len(m) != 0 {
-// 		t.Errorf("parseCSV() returned %v rows, expected %v", len(m), 0)
-// 	}
-// }
+			rr := httptest.NewRecorder()
+			handler := http.HandlerFunc(sumHandler)
+			handler.ServeHTTP(rr, req)
 
-func multipartBody(t *testing.T) (io.Reader, string) {
-	filePath := "../test/test_data/matrix.csv"
+			if rr.Code != http.StatusOK {
+				t.Errorf("sumHandler returned wrong status code: got %v, want %v", rr.Code, http.StatusOK)
+			}
+
+			got := rr.Body.String()
+			if strings.Contains(got, "error") && !tc.wantErr {
+				t.Errorf("Output of file at path %q should not contain err", tc.filePath)
+			}
+		})
+	}
+
+}
+
+func multipartBody(t *testing.T, filePath string) (io.Reader, string) {
 	fieldName := "file"
 	body := new(bytes.Buffer)
 

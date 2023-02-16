@@ -2,21 +2,43 @@
 package matrix
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 )
 
+// ContainsAllIntegerElements returns true if  matrix contains all int elements.
+func ContainsAllIntegerElements(m [][]string) (bool, error) {
+	rows, cols := size(m)
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			_, err := strconv.Atoi(m[i][j])
+			if err != nil {
+				return false, fmt.Errorf("error while converting element %q at row %d and column %d to integer: %w", m[i][j], i, j, err)
+			}
+		}
+	}
+	return true, nil
+}
+
+// IsSquare returns true if  matrix is square matrix.
+func IsSquare(m [][]string) bool {
+	rows, cols := size(m)
+	return rows == cols
+}
+
 // String returns a string in matrix format for a given 2D slice of strings.
 func String(m [][]string) string {
+	rows, cols := size(m)
 	response := ""
-	for i := 0; i < len(m); i++ {
-		for j := 0; j < len(m[0]); j++ {
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
 			response += m[i][j]
-			if j < len(m[0])-1 {
+			if j < cols-1 {
 				response += ","
 			}
 		}
-		if i < len(m)-1 {
+		if i < rows-1 {
 			response += "\n"
 		}
 	}

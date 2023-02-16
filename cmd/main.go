@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -91,8 +92,29 @@ func multiplyHandler(w http.ResponseWriter, r *http.Request) {
 func csvRecords(req *http.Request) ([][]string, error) {
 	file, _, err := req.FormFile("file")
 	if err != nil {
-		return nil, fmt.Errorf("while getting file from request :%v", err)
+		return nil, fmt.Errorf("while getting file from request :%w", err)
 	}
 	defer file.Close()
-	return csv.NewReader(file).ReadAll()
+	records, err := csv.NewReader(file).ReadAll()
+	if err != nil {
+		return nil, fmt.Errorf("while getting reading csv from file %v:%w", file, err)
+	}
+
+	err = validateRecords(records)
+	if err != nil {
+		return nil, fmt.Errorf("Input matrix %v is not valid :%w", records, err)
+	}
+	return records, nil
+}
+
+func validateRecords(m [][]string) error {
+	if !matrix.IsSquare(m) {
+		return errors.New("input matrix is not square matrix")
+	}
+
+	if _, err := matrix.ContainsAllIntegerElements(m); err != nil {
+		return fmt.Errorf("input matrix is has non-integer elements: %w", err)
+	}
+
+	return nil
 }
