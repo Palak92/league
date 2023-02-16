@@ -1,59 +1,78 @@
 # League Backend Server
 
+
 ## Steps to build (MacOS)
+
+
 ### Prerequisites
+
 1. Install [homebrew](https://brew.sh)
+
 2. Install golang
 ```
 brew install go
 ```
+
 3. Install [bazel](https://bazel.build/install) in your system.
 ```
 brew install bazel
 ```
 
+
 ### Clone Repo
+
 1. Make directory and cd into it to clone the project.
 ```
 mkdir -p ${GOPATH}/src/github.com/palak92/ 
 ```
 Note : substitute your GOPATH
-3. Change directory to workspace
+
+2. Change directory to workspace
 ```
 cd ${GOPATH}/src/github.com/palak92
 ```
-2. Checkout the code
+
+3. Checkout the code
 ```
 git clone https://www.github.com/palak92/league.git
 ```
-3. Change directory to project directory
+
+4. Change directory to project directory
 ```
 cd league
 ```
 
+
 ### Build
+
 1. Generate build files
 ```
 bazel run //:gazelle
 ```
-8. Run build command
+
+2. Run build command
 ```
 bazel build //...
 ```
-8. Run unit tests
+
+3. Run unit tests
 ```
 go test ./...
 ```
 
+
 ## Steps to Run Server (MacOS)
+
 1. Run web server
 ```
 bazel run //cmd:cmd
 ```
+
 2. Send request to the server from another client
 ```
 curl -F 'file=@/path/matrix.csv' "localhost:8080/echo"
 ```
+
 
 # What it does?
 League server serves following requests
