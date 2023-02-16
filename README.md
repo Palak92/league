@@ -1,6 +1,7 @@
-# League Backend Challenge
+# League Backend Server
 
-In main.go you will find a basic web server written in GoLang. It accepts a single request _/echo_. Extend the webservice with the ability to perform the following operations
+# What it does?
+League server serves following requests
 
 Given an uploaded csv file
 ```
@@ -45,7 +46,11 @@ Given an uploaded csv file
     362880
     ``` 
 
-The input file to these functions is a matrix, of any dimension where the number of rows are equal to the number of columns (square). Each value is an integer, and there is no header row. matrix.csv is example valid input.  
+## Steps to build 
+
+1. Install [`gazel`](https://github.com/bazelbuild/bazel-gazelle/blob/15828e8077542449fea13491bcb2e404a12412fd/README.rst#running-gazelle-with-bazel) and [`bazel`](https://bazel.build/install) in your system.
+2. 
+
 
 Run web server
 ```
@@ -57,11 +62,3 @@ Send request
 curl -F 'file=@/path/matrix.csv' "localhost:8080/echo"
 ```
 
-## What we're looking for
-
-- The solution runs
-- The solution performs all cases correctly
-- The code is easy to read
-- The code is reasonably documented
-- The code is tested
-- The code is robust and handles invalid input and provides helpful error messages
