@@ -1,0 +1,4 @@
+**/bazel-bin
+**/bazel-league
+**/bazel-out
+**/bazel-testlogs
