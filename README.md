@@ -58,6 +58,9 @@ brew install go
 brew install bazel
 ```
 4. Install [gazelle](https://github.com/bazelbuild/bazel-gazelle/blob/15828e8077542449fea13491bcb2e404a12412fd/README.rst#running-gazelle-with-bazel)
+```
+go get github.com/bazelbuild/bazel-gazelle/cmd/gazelle
+```
 
 ### Clone Repo
 1. Make directory and cd into it to clone the project.
@@ -73,6 +76,8 @@ git clone https://www.github.com/palak92/league.git
 ```
 cd ${GOPATH}/src/github.com/palak92/league
 ```
+Note : substitute your GOPATH
+
 ### Build
 1. Generate build files
 ```
