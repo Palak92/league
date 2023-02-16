@@ -6,8 +6,8 @@ import (
 	"strconv"
 )
 
-// MatrixToString returns a string in matrix format for a given 2D slice of strings
-func MatrixToString(m [][]string) string {
+// String returns a string in matrix format for a given 2D slice of strings.
+func String(m [][]string) string {
 	response := ""
 	for i := 0; i < len(m); i++ {
 		for j := 0; j < len(m[0]); j++ {

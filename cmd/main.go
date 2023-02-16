@@ -17,10 +17,10 @@ import (
 
 func main() {
 	http.HandleFunc("/echo", echoHandler)
-	http.HandleFunc("/invert", InvertHandler)
-	http.HandleFunc("/flatten", FlattenHandler)
-	http.HandleFunc("/sum", SumHandler)
-	http.HandleFunc("/multiply", MultiplyHandler)
+	http.HandleFunc("/invert", invertHandler)
+	http.HandleFunc("/flatten", flattenHandler)
+	http.HandleFunc("/sum", sumHandler)
+	http.HandleFunc("/multiply", multiplyHandler)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
@@ -42,20 +42,20 @@ func echoHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, response)
 }
 
-// Invert operation
-func InvertHandler(w http.ResponseWriter, r *http.Request) {
+// invertHandler inverts matrix.
+func invertHandler(w http.ResponseWriter, r *http.Request) {
 	records, err := csvRecords(r)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
 		return
 	}
 	inv := matrix.Invert(records)
-	response := matrix.MatrixToString(inv)
+	response := matrix.String(inv)
 	fmt.Fprint(w, response)
 }
 
-// Flatten operation
-func FlattenHandler(w http.ResponseWriter, r *http.Request) {
+// flattenHandler performs flats the matrix.
+func flattenHandler(w http.ResponseWriter, r *http.Request) {
 	records, err := csvRecords(r)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
@@ -65,8 +65,8 @@ func FlattenHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, flat)
 }
 
-// Sum operation
-func SumHandler(w http.ResponseWriter, r *http.Request) {
+// Sum operation performs sum operation.
+func sumHandler(w http.ResponseWriter, r *http.Request) {
 	records, err := csvRecords(r)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
@@ -76,8 +76,8 @@ func SumHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, sum)
 }
 
-// Multiply operation
-func MultiplyHandler(w http.ResponseWriter, r *http.Request) {
+// multiplyHandler performs multiply operation.
+func multiplyHandler(w http.ResponseWriter, r *http.Request) {
 	records, err := csvRecords(r)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("error %s", err.Error())))

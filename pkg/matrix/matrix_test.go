@@ -1,8 +1,9 @@
 package matrix
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestInvert(t *testing.T) {
@@ -36,8 +37,8 @@ func TestInvert(t *testing.T) {
 	for _, tc := range tcs {
 		t.Run(tc.desc, func(t *testing.T) {
 			got := Invert(tc.matrix)
-			if !reflect.DeepEqual(tc.want, got) {
-				t.Errorf("Invert(%v): %v, got: %v", tc.matrix, tc.want, got)
+			if diff := cmp.Diff(tc.want, got); diff != "" {
+				t.Errorf("Invert(%v) mismatch (-want +got):\n%s", tc.matrix, diff)
 			}
 		})
 	}
@@ -153,232 +154,40 @@ func TestSum(t *testing.T) {
 	}
 }
 
-// func TestMultiplyHandler(t *testing.T) {
-// 	m := "1,2,3\n4,5,6\n7,8,9"
-// 	req, err := http.NewRequest("POST", "/multiply", strings.NewReader(m))
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
+func TestString(t *testing.T) {
+	var tcs = []struct {
+		desc   string
+		matrix [][]string
+		want   string
+	}{
+		{
+			desc:   "Normal array",
+			matrix: [][]string{{"1", "2", "3"}, {"4", "5", "6"}, {"7", "8", "9"}},
+			want:   "1,2,3\n4,5,6\n7,8,9",
+		},
+		{
+			desc:   "Negative",
+			matrix: [][]string{{"1", "-2", "3"}},
+			want:   "1,-2,3",
+		},
+		{
+			desc:   "One element",
+			matrix: [][]string{{"1"}},
+			want:   "1",
+		},
+		{
+			desc:   "Empty",
+			matrix: [][]string{},
+			want:   "",
+		},
+	}
 
-// 	rr := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(MultiplyHandler)
-// 	handler.ServeHTTP(rr, req)
-
-// 	if rr.Code != http.StatusOK {
-// 		t.Errorf("handler returned wrong status code: got %v, want %v", rr.Code, http.StatusOK)
-// 	}
-
-// 	expected := "362880"
-// 	if rr.Body.String() != expected {
-// 		t.Errorf("handler returned unexpected body: got %v want %v", rr.Body.String(), expected)
-// 	}
-// }
-
-// func TestFlattenHandler(t *testing.T) {
-// 	m := "1,2,3\n4,5,6\n7,8,9"
-// 	req, err := http.NewRequest("POST", "/flatten", strings.NewReader(m))
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	rr := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(FlattenHandler)
-// 	handler.ServeHTTP(rr, req)
-
-// 	if rr.Code != http.StatusOK {
-// 		t.Errorf("handler returned wrong status code: got %v, want %v", rr.Code, http.StatusOK)
-// 	}
-
-// 	expected := "1,2,3,4,5,6,7,8,9"
-// 	if rr.Body.String() != expected {
-// 		t.Errorf("handler returned unexpected body: got %v want %v", rr.Body.String(), expected)
-// 	}
-// }
-
-// func TestSumHandler(t *testing.T) {
-// 	m := "1,2,3\n4,5,6\n7,8,9"
-// 	req, err := http.NewRequest("POST", "/sum", strings.NewReader(m))
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	rr := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(SumHandler)
-// 	handler.ServeHTTP(rr, req)
-
-// 	if rr.Code != http.StatusOK {
-// 		t.Errorf("handler returned wrong status code: got %v, want %v", rr.Code, http.StatusOK)
-// 	}
-
-// 	expected := "45"
-// 	if rr.Body.String() != expected {
-// 		t.Errorf("handler returned unexpected body: got %v want %v", rr.Body.String(), expected)
-// 	}
-// }
-
-// func TestInvertHandler(t *testing.T) {
-// 	m := "1,2,3\n4,5,6\n7,8,9"
-// 	req, err := http.NewRequest("POST", "/invert", strings.NewReader(m))
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	rr := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(InvertHandler)
-// 	handler.ServeHTTP(rr, req)
-// 	if rr.Code != http.StatusOK {
-// 		t.Errorf("handler returned wrong status code: got %v, want %v", rr.Code, http.StatusOK)
-// 	}
-
-// 	expected := "1,4,7\n2,5,8\n3,6,9"
-// 	if rr.Body.String() != expected {
-// 		t.Errorf("handler returned unexpected body: got %v want %v", rr.Body.String(), expected)
-// 	}
-// }
-
-// func TestParseCSV(t *testing.T) {
-// 	csvData := "1,2,3\n4,5,6\n7,8,9"
-// 	r := bytes.NewReader([]byte(csvData))
-// 	m := parseCSV(r)
-
-// 	if len(m) != 3 {
-// 		t.Errorf("parseCSV() returned %v rows, expected %v", len(m), 3)
-// 	}
-
-// 	if len(m[0]) != 3 {
-// 		t.Errorf("parseCSV() returned %v columns, expected %v", len(m[0]), 3)
-// 	}
-
-// 	expected := [][]string{{"1", "2", "3"}, {"4", "5", "6"}, {"7", "8", "9"}}
-// 	for i := range m {
-// 		for j := range m[i] {
-// 			if m[i][j] != expected[i][j] {
-// 				t.Errorf("parseCSV() returned unexpected value at (%v, %v): got %v, want %v", i, j, m[i][j], expected[i][j])
-// 			}
-// 		}
-// 	}
-// }
-
-// func TestSumMatrix(t *testing.T) {
-// 	m := [][]string{{"1", "2", "3"}, {"4", "5", "6"}, {"7", "8", "9"}}
-// 	sum := SumMatrix(m)
-
-// 	if sum != 45 {
-// 		t.Errorf("sumMatrix() returned unexpected value: got %v, want %v", sum, 45)
-// 	}
-// }
-
-// func TestMultiplyMatrix(t *testing.T) {
-// 	m := [][]string{{"1", "2", "3"}, {"4", "5", "6"}, {"7", "8", "9"}}
-// 	product := MultiplyMatrix(m)
-
-// 	if product != 362880 {
-// 		t.Errorf("multiplyMatrix() returned unexpected value: got %v, want %v", product, 362880)
-// 	}
-// }
-
-// func TestMatrixToString(t *testing.T) {
-// 	m := [][]string{{"1", "2", "3"}, {"4", "5", "6"}, {"7", "8", "9"}}
-// 	str := MatrixToString(m)
-
-// 	expected := "1,2,3\n4,5,6\n7,8,9"
-// 	if str != expected {
-// 		t.Errorf("matrixToString() returned unexpected value: got %v, want %v", str, expected)
-// 	}
-// }
-
-// func TestParseCSVEmptyInput(t *testing.T) {
-// 	r := bytes.NewReader([]byte{})
-// 	m := parseCSV(r)
-
-// 	if len(m) != 0 {
-// 		t.Errorf("parseCSV() returned %v rows, expected %v", len(m), 0)
-// 	}
-// }
-
-// func TestParseCSVInvalidCSV(t *testing.T) {
-// 	csvData := "1,2,3\n4,5,6\n7,8"
-// 	r := bytes.NewReader([]byte(csvData))
-// 	m := parseCSV(r)
-
-// 	if len(m) != 2 {
-// 		t.Errorf("parseCSV() returned %v rows, expected %v", len(m), 2)
-// 	}
-
-// 	if len(m[0]) != 3 {
-// 		t.Errorf("parseCSV() returned %v columns, expected %v", len(m[0]), 3)
-// 	}
-
-// 	expected := [][]string{{"1", "2", "3"}, {"4", "5", "6"}}
-// 	for i := range m {
-// 		for j := range m[i] {
-// 			if m[i][j] != expected[i][j] {
-// 				t.Errorf("parseCSV() returned unexpected value at (%v, %v): got %v, want %v", i, j, m[i][j], expected[i][j])
-// 			}
-// 		}
-// 	}
-// }
-
-// func TestInvertHandlerInvalidMatrix(t *testing.T) {
-// 	m := "1,2,3\n4,5,6\n7,8"
-// 	req, err := http.NewRequest("POST", "/invert", strings.NewReader(m))
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	rr := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(InvertHandler)
-// 	handler.ServeHTTP(rr, req)
-
-// 	if rr.Code != http.StatusBadRequest {
-// 		t.Errorf("handler returned wrong status code: got %v, want %v", rr.Code, http.StatusBadRequest)
-// 	}
-// }
-
-// func TestMultiplyHandlerInvalidMatrix(t *testing.T) {
-// 	m := "1,2,3\n4,5,6\n7,8"
-// 	req, err := http.NewRequest("POST", "/multiply", strings.NewReader(m))
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	rr := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(MultiplyHandler)
-// 	handler.ServeHTTP(rr, req)
-
-// 	if rr.Code != http.StatusBadRequest {
-// 		t.Errorf("handler returned wrong status code: got %v, want %v", rr.Code, http.StatusBadRequest)
-// 	}
-// }
-
-// func TestFlattenHandlerInvalidMatrix(t *testing.T) {
-// 	m := "1,2,3\n4,5,6\n7,8"
-// 	req, err := http.NewRequest("POST", "/flatten", strings.NewReader(m))
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	rr := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(FlattenHandler)
-// 	handler.ServeHTTP(rr, req)
-
-// 	if rr.Code != http.StatusBadRequest {
-// 		t.Errorf("handler returned wrong status code: got %v, want %v", rr.Code, http.StatusBadRequest)
-// 	}
-// }
-
-// func TestSumHandlerInvalidMatrix(t *testing.T) {
-// 	m := "1,2,3\n4,5,6\n7,8"
-// 	req, err := http.NewRequest("POST", "/sum", strings.NewReader(m))
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	rr := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(SumHandler)
-// 	handler.ServeHTTP(rr, req)
-
-// 	if rr.Code != http.StatusBadRequest {
-// 		t.Errorf("handler returned wrong status code: got %v, want %v", rr.Code, http.StatusBadRequest)
-// 	}
-// }
+	for _, tc := range tcs {
+		t.Run(tc.desc, func(t *testing.T) {
+			got := String(tc.matrix)
+			if diff := cmp.Diff(tc.want, got); diff != "" {
+				t.Errorf("String(%v) mismatch (-want +got):\n%s", tc.matrix, diff)
+			}
+		})
+	}
+}
