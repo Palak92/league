@@ -2,4 +2,4 @@ module github.com/palak92/league
 
 go 1.17
 
-require github.com/google/go-cmp v0.5.9 // indirect
+require github.com/google/go-cmp v0.5.9

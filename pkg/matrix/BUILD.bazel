@@ -11,4 +11,5 @@ go_test(
     name = "matrix_test",
     srcs = ["matrix_test.go"],
     embed = [":matrix"],
+    deps = ["@com_github_google_go_cmp//cmp:go_default_library"],
 )

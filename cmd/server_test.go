@@ -8,13 +8,14 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 )
 
-const validFilePath = "../test/test_data/matrix.csv"
+const validFilePath = "../test/data/matrix.csv"
 
 func TestEchoHandler(t *testing.T) {
 	body, ct := multipartBody(t, validFilePath)
@@ -134,17 +135,17 @@ func TestMatrixValidation(t *testing.T) {
 		},
 		{
 			desc:     "non-square matrix",
-			filePath: "../test/test_data/non_square.csv",
+			filePath: "../test/data/non_square.csv",
 			wantErr:  true,
 		},
 		{
 			desc:     "non-integer matrix elements",
-			filePath: "../test/test_data/non_integer.csv",
+			filePath: "../test/data/non_integer.csv",
 			wantErr:  true,
 		},
 		{
 			desc:     "Empty",
-			filePath: "../test/test_data/empty.csv",
+			filePath: "../test/data/empty.csv",
 			wantErr:  false,
 		},
 	}
@@ -172,18 +173,18 @@ func TestMatrixValidation(t *testing.T) {
 
 }
 
-func multipartBody(t *testing.T, filePath string) (io.Reader, string) {
+func multipartBody(t *testing.T, p string) (io.Reader, string) {
 	fieldName := "file"
 	body := new(bytes.Buffer)
-
+	absPath, _ := filepath.Abs(p)
 	mw := multipart.NewWriter(body)
 
-	file, err := os.Open(filePath)
+	file, err := os.Open(absPath)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	w, err := mw.CreateFormFile(fieldName, filePath)
+	w, err := mw.CreateFormFile(fieldName, absPath)
 	if err != nil {
 		t.Fatal(err)
 	}

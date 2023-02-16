@@ -46,19 +46,50 @@ Given an uploaded csv file
     362880
     ``` 
 
-## Steps to build 
-
-1. Install [`gazel`](https://github.com/bazelbuild/bazel-gazelle/blob/15828e8077542449fea13491bcb2e404a12412fd/README.rst#running-gazelle-with-bazel) and [`bazel`](https://bazel.build/install) in your system.
-2. 
-
-
-Run web server
+## Steps to build (MacOS)
+### Prerequisites
+1. Install [homebrew](https://brew.sh)
+2. Install [golang] 
+```brew install go
 ```
-go run .
+3. Install [`bazel`](https://bazel.build/install) in your system.
+```brew install bazel
+```
+4. Install [`gazel`](https://github.com/bazelbuild/bazel-gazelle/blob/15828e8077542449fea13491bcb2e404a12412fd/README.rst#running-gazelle-with-bazel)
+
+### Clone Repo
+1. Make directory and cd into it to clone the project.
+```
+mkdir -p ${GOPATH}/src/github.com/palak92/ && cd ${GOPATH}/src/github.com/palak92/
+Note : substitute your GOPATH
+```
+2. Checkout the code
+```
+git clone https://www.github.com/palak92/league.git
+```
+### Build
+1. Generate build files
+```
+bazel run //:gazelle
+```
+8. Run build command
+```
+bazel build //...
+```
+8. Run unit tests
+```
+go test ./...
 ```
 
-Send request
+## Steps to Run Server (MacOS)
+1. Run web server
+```
+bazel run //cmd:cmd
+```
+2. Send request to the server from another client
 ```
 curl -F 'file=@/path/matrix.csv' "localhost:8080/echo"
 ```
 
+## Known Issues
+1. Cannot run tests through bazel configuration. Workaround is to run test via go test util.

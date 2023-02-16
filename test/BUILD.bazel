@@ -1,0 +1,6 @@
+filegroup(
+    name = "data",
+    testonly = 1,
+    srcs = glob(["github.com/palak92/league/test/data/**"]),
+    visibility = ["//visibility:public"],
+)
