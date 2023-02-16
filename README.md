@@ -49,13 +49,15 @@ Given an uploaded csv file
 ## Steps to build (MacOS)
 ### Prerequisites
 1. Install [homebrew](https://brew.sh)
-2. Install [golang] 
-```brew install go
+2. Install golang
 ```
-3. Install [`bazel`](https://bazel.build/install) in your system.
-```brew install bazel
+brew install go
 ```
-4. Install [`gazel`](https://github.com/bazelbuild/bazel-gazelle/blob/15828e8077542449fea13491bcb2e404a12412fd/README.rst#running-gazelle-with-bazel)
+3. Install [bazel](https://bazel.build/install) in your system.
+```
+brew install bazel
+```
+4. Install [gazel](https://github.com/bazelbuild/bazel-gazelle/blob/15828e8077542449fea13491bcb2e404a12412fd/README.rst#running-gazelle-with-bazel)
 
 ### Clone Repo
 1. Make directory and cd into it to clone the project.
